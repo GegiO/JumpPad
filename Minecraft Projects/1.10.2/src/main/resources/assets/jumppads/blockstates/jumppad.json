@@ -1,0 +1,39 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "jumppads:jumppad"
+    },
+    "variants": {
+        "facing": {
+            "north": {
+                "model": "jumppads:jumppad"
+            },
+            "south": {
+                "model": "jumppads:jumppad", "y": 90 
+            },
+            "east": {
+                "model": "jumppads:jumppad", "y": 180
+            },
+            "west": {
+                "model": "jumppads:jumppad", "y": 270
+            }
+        },
+        "extended":{
+            "true":{
+                "submodel": "jumppads:jumppad_pad_extended"
+            
+            },
+            "false":{
+                "submodel": "jumppads:jumppad_pad"
+            }
+        },
+        "inventory":{
+            "model": "jumppads:jumppad"
+        }
+    }
+}
+
+
+
+
+     
