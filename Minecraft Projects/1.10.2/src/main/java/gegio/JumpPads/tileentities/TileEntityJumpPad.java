@@ -17,7 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -124,7 +124,7 @@ public class TileEntityJumpPad extends TileEntity implements IInventory, ITickab
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound){
-		
+		super.writeToNBT(compound);
 		NBTTagList taglist = new NBTTagList();
 		
 		for(int i=0 ; i < this.getSizeInventory() ; ++i){
@@ -142,6 +142,19 @@ public class TileEntityJumpPad extends TileEntity implements IInventory, ITickab
 		System.out.println("Written to NBT");
 		return compound;
 	}
+	
+	@Override
+    public SPacketUpdateTileEntity getUpdatePacket(){
+		NBTTagCompound tag = new NBTTagCompound();
+		writeToNBT(tag);
+        return new SPacketUpdateTileEntity(this.pos,0,tag);
+    }
+	
+	@Override
+    public void onDataPacket(net.minecraft.network.NetworkManager net, net.minecraft.network.play.server.SPacketUpdateTileEntity pkt){
+		readFromNBT(pkt.getNbtCompound());
+		
+    }
 	
 
 	//IInventory

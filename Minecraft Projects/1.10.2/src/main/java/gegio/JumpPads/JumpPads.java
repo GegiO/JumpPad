@@ -36,8 +36,8 @@ public class JumpPads{
 		InitItems.register();
 		InitBlocks.init();
 		InitBlocks.register();
-		TileEntities.register();
 		initGUI.registerGUI();	
+		proxy.registerTileEntity();
 		proxy.registerRenders();
 	}
 	

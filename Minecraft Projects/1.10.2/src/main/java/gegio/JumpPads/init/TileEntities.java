@@ -8,6 +8,6 @@ public class TileEntities {
 	
 
 	public static void register(){
-		GameRegistry.registerTileEntity(TileEntityJumpPad.class, Reference.MOD_ID + "jumpPad");
+		GameRegistry.registerTileEntity(TileEntityJumpPad.class, "jumpPad_tile_entity");
 	}
 }
