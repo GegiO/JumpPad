@@ -1,6 +1,6 @@
-package archduke.JumpPads;
+package gegio.JumpPads;
 
-import archduke.JumpPads.init.InitItems;
+import gegio.JumpPads.init.InitItems;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 

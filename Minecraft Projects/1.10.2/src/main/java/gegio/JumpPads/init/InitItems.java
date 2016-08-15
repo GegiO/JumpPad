@@ -1,9 +1,9 @@
-package archduke.JumpPads.init;
+package gegio.JumpPads.init;
 
 
-import archduke.JumpPads.JumpPads;
-import archduke.JumpPads.Reference;
-import archduke.JumpPads.items.PadMarker;
+import gegio.JumpPads.JumpPads;
+import gegio.JumpPads.Reference;
+import gegio.JumpPads.items.PadMarker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;

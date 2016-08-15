@@ -1,4 +1,4 @@
-package archduke.JumpPads.util;
+package gegio.JumpPads.util;
 
 //simple class for recording unit vectors
 public class LaunchContainer {

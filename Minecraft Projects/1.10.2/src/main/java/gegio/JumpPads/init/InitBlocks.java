@@ -1,8 +1,8 @@
-package archduke.JumpPads.init;
+package gegio.JumpPads.init;
 
-import archduke.JumpPads.JumpPads;
-import archduke.JumpPads.Reference;
-import archduke.JumpPads.Blocks.JumpPad;
+import gegio.JumpPads.JumpPads;
+import gegio.JumpPads.Reference;
+import gegio.JumpPads.Blocks.JumpPad;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;

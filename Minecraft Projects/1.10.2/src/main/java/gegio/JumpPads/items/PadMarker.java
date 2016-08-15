@@ -1,13 +1,13 @@
-package archduke.JumpPads.items;
+package gegio.JumpPads.items;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import archduke.JumpPads.JumpPads;
-import archduke.JumpPads.Reference;
-import archduke.JumpPads.playerMods.AirResistNeutralizer;
-import archduke.JumpPads.util.LaunchContainer;
-import archduke.JumpPads.util.LaunchHelper;
+import gegio.JumpPads.JumpPads;
+import gegio.JumpPads.Reference;
+import gegio.JumpPads.playerMods.AirResistNeutralizer;
+import gegio.JumpPads.util.LaunchContainer;
+import gegio.JumpPads.util.LaunchHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

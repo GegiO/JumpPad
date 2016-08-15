@@ -1,4 +1,4 @@
-package archduke.JumpPads.proxy;
+package gegio.JumpPads.proxy;
 
 public class CommonProxy {
 	public void registerRenders(){

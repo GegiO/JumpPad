@@ -1,7 +1,7 @@
-package archduke.JumpPads.init;
+package gegio.JumpPads.init;
 
-import archduke.JumpPads.Reference;
-import archduke.JumpPads.tileentities.TileEntityJumpPad;
+import gegio.JumpPads.Reference;
+import gegio.JumpPads.tileentities.TileEntityJumpPad;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class TileEntities {

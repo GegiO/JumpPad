@@ -1,6 +1,6 @@
-package archduke.JumpPads.Blocks;
+package gegio.JumpPads.Blocks;
 
-import archduke.JumpPads.tileentities.TileEntityJumpPad;
+import gegio.JumpPads.tileentities.TileEntityJumpPad;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;

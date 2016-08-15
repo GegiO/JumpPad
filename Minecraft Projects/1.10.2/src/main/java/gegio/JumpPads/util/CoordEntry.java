@@ -1,4 +1,4 @@
-package archduke.JumpPads.util;
+package gegio.JumpPads.util;
 
 import net.minecraft.util.math.BlockPos;
 

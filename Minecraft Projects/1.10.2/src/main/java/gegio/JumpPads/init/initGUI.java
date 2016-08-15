@@ -1,8 +1,8 @@
-package archduke.JumpPads.init;
+package gegio.JumpPads.init;
 
-import archduke.JumpPads.GuiHandlerRegistry;
-import archduke.JumpPads.JumpPads;
-import archduke.JumpPads.gui.GUIhandler;
+import gegio.JumpPads.GuiHandlerRegistry;
+import gegio.JumpPads.JumpPads;
+import gegio.JumpPads.gui.GUIhandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 public class initGUI {

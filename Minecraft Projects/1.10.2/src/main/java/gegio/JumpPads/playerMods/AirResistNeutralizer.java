@@ -1,6 +1,6 @@
-package archduke.JumpPads.playerMods;
+package gegio.JumpPads.playerMods;
 
-import archduke.JumpPads.Reference;
+import gegio.JumpPads.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;

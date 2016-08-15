@@ -1,7 +1,7 @@
-package archduke.JumpPads.util;
+package gegio.JumpPads.util;
 
-import archduke.JumpPads.playerMods.AirResistNeutralizer;
-import archduke.JumpPads.tileentities.TileEntityJumpPad;
+import gegio.JumpPads.playerMods.AirResistNeutralizer;
+import gegio.JumpPads.tileentities.TileEntityJumpPad;
 import net.minecraftforge.common.MinecraftForge;
 
 public class SubscribeEvents {

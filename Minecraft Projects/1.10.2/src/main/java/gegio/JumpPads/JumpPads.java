@@ -1,13 +1,13 @@
-package archduke.JumpPads;
+package gegio.JumpPads;
 
-import archduke.JumpPads.init.InitBlocks;
-import archduke.JumpPads.init.InitItems;
-import archduke.JumpPads.init.TileEntities;
-import archduke.JumpPads.init.initGUI;
-import archduke.JumpPads.playerMods.AirResistNeutralizer;
-import archduke.JumpPads.proxy.ClientProxy;
-import archduke.JumpPads.proxy.CommonProxy;
-import archduke.JumpPads.util.SubscribeEvents;
+import gegio.JumpPads.init.InitBlocks;
+import gegio.JumpPads.init.InitItems;
+import gegio.JumpPads.init.TileEntities;
+import gegio.JumpPads.init.initGUI;
+import gegio.JumpPads.playerMods.AirResistNeutralizer;
+import gegio.JumpPads.proxy.ClientProxy;
+import gegio.JumpPads.proxy.CommonProxy;
+import gegio.JumpPads.util.SubscribeEvents;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;

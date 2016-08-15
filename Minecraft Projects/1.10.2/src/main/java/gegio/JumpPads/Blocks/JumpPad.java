@@ -1,13 +1,13 @@
-package archduke.JumpPads.Blocks;
+package gegio.JumpPads.Blocks;
 
 import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import archduke.JumpPads.JumpPads;
-import archduke.JumpPads.gui.GUIhandler;
-import archduke.JumpPads.tileentities.TileEntityJumpPad;
+import gegio.JumpPads.JumpPads;
+import gegio.JumpPads.gui.GUIhandler;
+import gegio.JumpPads.tileentities.TileEntityJumpPad;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -33,6 +33,7 @@ public class JumpPad extends Block implements ITileEntityProvider{
 	public static final PropertyDirection PROPERTYFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 	public static final PropertyBool PROPERTYEXTEND = PropertyBool.create("extended");
 	public static final AxisAlignedBB BOUNDINGBOX = new AxisAlignedBB(0,0,0,1,.1875,1);
+	private EnumFacing facing = EnumFacing.NORTH;
 
 	public JumpPad() {
 		super(Material.IRON);
@@ -44,7 +45,7 @@ public class JumpPad extends Block implements ITileEntityProvider{
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta){
 		
-		return new TileEntityJumpPad(this.getDefaultState());
+		return new TileEntityJumpPad();
 	}
 	
 	@Override
@@ -115,9 +116,11 @@ public class JumpPad extends Block implements ITileEntityProvider{
 	@Override
     public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
     {
-		EnumFacing enumfacing = (placer == null) ? EnumFacing.NORTH : EnumFacing.fromAngle(placer.rotationYaw);
+		this.facing = (placer == null) ? EnumFacing.NORTH : EnumFacing.fromAngle(placer.rotationYaw);
 		
-        return this.getDefaultState().withProperty(PROPERTYFACING, enumfacing).withProperty(PROPERTYEXTEND, false);
+		System.out.println(this.facing);
+		
+        return this.getDefaultState().withProperty(PROPERTYFACING, this.facing).withProperty(PROPERTYEXTEND, false);
        
     }
 	
@@ -130,11 +133,5 @@ public class JumpPad extends Block implements ITileEntityProvider{
 
     }
 	
-	public void extend(){
-		this.getDefaultState().withProperty(PROPERTYEXTEND, true);
-	}
-	
-	public void retract(){
-		this.getDefaultState().withProperty(PROPERTYEXTEND, false);
-	}
+
 }

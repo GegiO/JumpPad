@@ -1,7 +1,7 @@
-package archduke.JumpPads.proxy;
+package gegio.JumpPads.proxy;
 
-import archduke.JumpPads.init.InitBlocks;
-import archduke.JumpPads.init.InitItems;
+import gegio.JumpPads.init.InitBlocks;
+import gegio.JumpPads.init.InitItems;
 
 public class ClientProxy extends CommonProxy {
 	@Override

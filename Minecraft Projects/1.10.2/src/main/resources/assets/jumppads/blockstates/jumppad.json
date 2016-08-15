@@ -6,16 +6,16 @@
     "variants": {
         "facing": {
             "north": {
-                "model": "jumppads:jumppad"
-            },
-            "south": {
-                "model": "jumppads:jumppad", "y": 90 
-            },
-            "east": {
                 "model": "jumppads:jumppad", "y": 180
             },
-            "west": {
+            "south": {
+                "model": "jumppads:jumppad"
+            },
+            "east": {
                 "model": "jumppads:jumppad", "y": 270
+            },
+            "west": {
+                "model": "jumppads:jumppad", "y": 90
             }
         },
         "extended":{

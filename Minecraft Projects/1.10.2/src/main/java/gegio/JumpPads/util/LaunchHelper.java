@@ -1,6 +1,6 @@
-package archduke.JumpPads.util;
+package gegio.JumpPads.util;
 
-import archduke.JumpPads.Reference;
+import gegio.JumpPads.Reference;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class LaunchHelper {

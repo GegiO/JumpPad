@@ -1,4 +1,4 @@
-package archduke.JumpPads;
+package gegio.JumpPads;
 
 import java.util.HashMap;
 

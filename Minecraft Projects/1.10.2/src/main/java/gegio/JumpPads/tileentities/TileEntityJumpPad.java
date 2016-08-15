@@ -1,12 +1,12 @@
-package archduke.JumpPads.tileentities;
+package gegio.JumpPads.tileentities;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import archduke.JumpPads.Blocks.JumpPad;
-import archduke.JumpPads.util.CoordEntry;
-import archduke.JumpPads.util.LaunchContainer;
-import archduke.JumpPads.util.LaunchHelper;
+import gegio.JumpPads.Blocks.JumpPad;
+import gegio.JumpPads.util.CoordEntry;
+import gegio.JumpPads.util.LaunchContainer;
+import gegio.JumpPads.util.LaunchHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
@@ -20,7 +20,7 @@ import net.minecraft.network.Packet;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -32,7 +32,7 @@ import scala.actors.threadpool.Arrays;
 public class TileEntityJumpPad extends TileEntity implements IInventory, ITickable{
 	
 	
-	int animTickCounter =0;
+	int animTickCounter = 0;
 	
 	
 	private ItemStack[] markerStorage = new ItemStack[getSizeInventory()];
@@ -43,15 +43,10 @@ public class TileEntityJumpPad extends TileEntity implements IInventory, ITickab
 	public int CURRENT_SELECTED = 0;
 	
 	public static final int NUM_SLOTS = 3;
-	
-	IBlockState blockstate;
+
 	
 	public TileEntityJumpPad(){
 		System.out.println("Created tile entity");
-	}
-	
-	public TileEntityJumpPad(IBlockState BlockState){
-		blockstate = BlockState;
 	}
 	
 	//ITickable
@@ -60,6 +55,8 @@ public class TileEntityJumpPad extends TileEntity implements IInventory, ITickab
 	public void update() {
 		
 		EntityPlayer playerIn = this.worldObj.getClosestPlayer(this.pos.getX(), this.pos.getY(), this.pos.getZ(), 1,false);
+		EnumFacing enumfacing = this.worldObj.getBlockState(this.pos).getValue(JumpPad.PROPERTYFACING);
+		
 		
 		if(playerIn != null && markerStorage[CURRENT_SELECTED] != null){
 			if(playerIn.isSneaking() && playerIn.onGround){
@@ -80,7 +77,8 @@ public class TileEntityJumpPad extends TileEntity implements IInventory, ITickab
 					playerIn.setVelocity(init.getUnitX() * launchSpeed,init.getUnitY() * launchSpeed, init.getUnitZ() * launchSpeed);
 					playerIn.getEntityData().setBoolean("hasJumped", true);
 					
-					worldObj.setBlockState(this.pos, blockstate.withProperty(JumpPad.PROPERTYEXTEND, true), 2);
+					
+					worldObj.setBlockState(this.pos, this.worldObj.getBlockState(this.pos).withProperty(JumpPad.PROPERTYEXTEND, true).withProperty(JumpPad.PROPERTYFACING, enumfacing), 2);
 					animTickCounter++;
 				}
 			}else{
@@ -91,7 +89,7 @@ public class TileEntityJumpPad extends TileEntity implements IInventory, ITickab
 		if(animTickCounter > 0 && animTickCounter < 11){
 			animTickCounter++;
 		}else if(animTickCounter >= 11){
-			worldObj.setBlockState(this.pos, blockstate.withProperty(JumpPad.PROPERTYEXTEND, false), 2);
+			worldObj.setBlockState(this.pos, this.worldObj.getBlockState(this.pos).withProperty(JumpPad.PROPERTYEXTEND, false).withProperty(JumpPad.PROPERTYFACING, enumfacing), 2);
 			animTickCounter = 0;
 		}
 	}
