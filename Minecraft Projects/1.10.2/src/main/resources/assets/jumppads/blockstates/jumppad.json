@@ -29,6 +29,14 @@
         },
         "inventory":{
             "model": "jumppads:jumppad"
+        },
+        "anglemode":{
+            "true":{
+                "submodel": "jumppads:indicator_frame_full"
+            },
+            "false":{
+                "submodel": "jumppads:indicator_frame_fall"
+            }
         }
     }
 }

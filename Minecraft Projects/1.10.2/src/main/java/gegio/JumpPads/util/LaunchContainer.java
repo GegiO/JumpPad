@@ -5,34 +5,34 @@ public class LaunchContainer {
 	double unitX;
 	double unitY;
 	double unitZ;
-	double launchSpeed;
 	
-	public LaunchContainer(double unitX, double unitY, double unitZ, double LaunchSpeed) {
+	public LaunchContainer(double unitX, double unitY, double unitZ) {
 		super();
 		this.unitX = unitX;
 		this.unitY = unitY;
 		this.unitZ = unitZ;
-		this.launchSpeed = LaunchSpeed;
+
 	}
 
 	public double getUnitX() {
-		return unitX;
+		if(!Double.isNaN(unitX))
+			return unitX;
+		else
+			return 0;
 	}
 
 	public double getUnitY() {
-		return unitY;
+		if(!Double.isNaN(unitY))
+			return unitY;
+		else
+			return 0;
 	}
 
 	public double getUnitZ() {
-		return unitZ;
-	}
-	
-	public double getLaunchSpeed(){
-		return launchSpeed;
+		if(!Double.isNaN(unitZ))
+			return unitZ;
+		else
+			return 0;
 	}
 
-	
-	
-	
-	
 }

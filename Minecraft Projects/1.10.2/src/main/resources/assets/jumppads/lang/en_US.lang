@@ -1,0 +1,4 @@
+<en_US.lang - English localization files for JumpPads mod>
+item.PadMarker.name=Jump Pad Marker
+tile.jumppads:jumppad.name=Jump Pad
+itemGroup.cTabs=JumpPad

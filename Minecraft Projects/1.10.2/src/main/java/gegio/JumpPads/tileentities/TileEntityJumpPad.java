@@ -3,6 +3,8 @@ package gegio.JumpPads.tileentities;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import gegio.JumpPads.Blocks.JumpPad;
 import gegio.JumpPads.util.CoordEntry;
 import gegio.JumpPads.util.LaunchContainer;
@@ -27,138 +29,205 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import scala.actors.threadpool.Arrays;
 
-//Does nothing yet
-//will eventually calculate and launch the player
-public class TileEntityJumpPad extends TileEntity implements IInventory, ITickable{
-	
-	
+public class TileEntityJumpPad extends TileEntity implements IInventory, ITickable {
+
 	int animTickCounter = 0;
-	
-	
-	private ItemStack[] markerStorage = new ItemStack[getSizeInventory()];
-	
-	public static final int GREEN = 0;
-	public static final int RED = 1;
-	public static final int BLUE = 2;
+	public ItemStack[] markerStorage = new ItemStack[getSizeInventory()];
+	public BlockPos target;
 	public int CURRENT_SELECTED = 0;
-	
+	public double ANGLE;
 	public static final int NUM_SLOTS = 3;
 
-	
-	public TileEntityJumpPad(){
-		System.out.println("Created tile entity");
+	public boolean extendedBoolean = false;
+	public boolean angleTriggerBoolean = false;
+	public EnumFacing facingValue;
+
+	public boolean hasJumped = true;
+
+	public TileEntityJumpPad() {
 	}
-	
-	//ITickable
+
+	// ITickable
 
 	@Override
 	public void update() {
-		
-		EntityPlayer playerIn = this.worldObj.getClosestPlayer(this.pos.getX(), this.pos.getY(), this.pos.getZ(), 1,false);
-		EnumFacing enumfacing = this.worldObj.getBlockState(this.pos).getValue(JumpPad.PROPERTYFACING);
-		
-		
-		if(playerIn != null && markerStorage[CURRENT_SELECTED] != null){
-			if(playerIn.isSneaking() && playerIn.onGround){
-				
-				ItemStack itemStackIn = markerStorage[CURRENT_SELECTED];
-				
-				NBTTagCompound nbt = (NBTTagCompound) itemStackIn.getTagCompound().getTag("coords");
-				
-				LaunchContainer init = new LaunchHelper().getLaunchInfo(nbt.getLong("posX"), nbt.getLong("posY"), nbt.getLong("posZ"), playerIn);
-				
-				if(!Double.isNaN(init.getLaunchSpeed()) && this.worldObj.isRemote){
+		EntityPlayer playerIn = this.worldObj.getClosestPlayer(this.pos.getX() + .5, this.pos.getY(), this.pos.getZ() + .5, 1.5 ,false);
+		EnumFacing enumfacing;
+		if (!worldObj.isAirBlock(this.pos)) {
+			enumfacing = this.worldObj.getBlockState(this.pos).getValue(JumpPad.PROPERTYFACING);
+		} else {
+			enumfacing = EnumFacing.NORTH;
+		}
 
-					System.out.println(" X unit: "+ init.getUnitX()+" Y unit: " + init.getUnitY() + " Z Unit: " + init.getUnitZ());
-					System.out.println("launch Speed: " + init.getLaunchSpeed());
-					
-					double launchSpeed = init.getLaunchSpeed();
-					
-					playerIn.setVelocity(init.getUnitX() * launchSpeed,init.getUnitY() * launchSpeed, init.getUnitZ() * launchSpeed);
-					playerIn.getEntityData().setBoolean("hasJumped", true);
-					
-					
-					worldObj.setBlockState(this.pos, this.worldObj.getBlockState(this.pos).withProperty(JumpPad.PROPERTYEXTEND, true).withProperty(JumpPad.PROPERTYFACING, enumfacing), 2);
-					animTickCounter++;
+		EnumFacing angleMarker = enumfacing.rotateY();
+		if (this.worldObj.isSidePowered(this.pos.offset(angleMarker), angleMarker)) {
+			changeProperty(true, extendedBoolean, enumfacing);
+		} else {
+			changeProperty(false, extendedBoolean, enumfacing);
+		}
+
+		if (playerIn != null && playerIn.isSneaking() && playerIn.onGround && animTickCounter == 0) {
+
+			CURRENT_SELECTED = getPowerSide(enumfacing);
+			MarkAndNotifyPad();
+			if (markerStorage[CURRENT_SELECTED] != null && markerStorage[CURRENT_SELECTED].hasTagCompound()) {
+
+				ItemStack itemStackIn = markerStorage[CURRENT_SELECTED];
+				NBTTagCompound nbt = (NBTTagCompound) itemStackIn.getTagCompound().getTag("coords");
+				double targX = nbt.getLong("posX");
+				double targY = nbt.getLong("posY");
+				double targZ = nbt.getLong("posZ");
+				
+				LaunchContainer init = new LaunchHelper().getLaunchInfo(new BlockPos(playerIn.posX, playerIn.posY, playerIn.posZ), new BlockPos(targX, targY, targZ));
+				
+				if (this.worldObj.isRemote) {
+					playerIn.setVelocity(init.getUnitX(), init.getUnitY(),init.getUnitZ());
 				}
-			}else{
+				playerIn.getEntityData().setBoolean("hasJumped", true);
+				
+				if(!angleTriggerBoolean){
+					playerIn.getEntityData().setDouble("targetX", targX);
+					playerIn.getEntityData().setDouble("targetY", targY);
+					playerIn.getEntityData().setDouble("targetZ", targZ);
+					playerIn.getEntityData().setBoolean("launchType", true);
+				}else{
+					playerIn.getEntityData().setBoolean("launchType", false);
+				}
+				
+
+				if (!worldObj.isAirBlock(this.pos)) {
+					changeProperty(angleTriggerBoolean, false, enumfacing);
+				}
+				animTickCounter++;
+			} else {
 				playerIn = null;
 			}
 		}
-		
-		if(animTickCounter > 0 && animTickCounter < 11){
+
+		if (animTickCounter > 0 && animTickCounter < 11) {
 			animTickCounter++;
-		}else if(animTickCounter >= 11){
-			worldObj.setBlockState(this.pos, this.worldObj.getBlockState(this.pos).withProperty(JumpPad.PROPERTYEXTEND, false).withProperty(JumpPad.PROPERTYFACING, enumfacing), 2);
+		} else if (animTickCounter >= 11) {
+			if (!worldObj.isAirBlock(this.pos)) {
+				changeProperty(angleTriggerBoolean, false, enumfacing);
+			}
 			animTickCounter = 0;
 		}
+
 	}
+	
+	public void changeProperty(boolean Anglemarker,boolean extended, EnumFacing facing){
+		angleTriggerBoolean = Anglemarker; 
+		extendedBoolean = extended;
+		facingValue = facing;
 		
-	//TileEntity
+		this.worldObj.setBlockState(this.pos,
+				this.worldObj.getBlockState(this.pos)
+				.withProperty(JumpPad.PROPERTYANGLE, angleTriggerBoolean).withProperty(JumpPad.PROPERTYFACING, facing)
+				.withProperty(JumpPad.PROPERTYEXTEND, extendedBoolean),2);
+	}
 	
+	public void MarkAndNotifyPad(){
+		this.worldObj.markAndNotifyBlock(this.pos, this.worldObj.getChunkFromBlockCoords(this.pos),
+				this.worldObj.getBlockState(pos), this.worldObj.getBlockState(pos), 3);
+	}
+
+	public int getPowerSide(EnumFacing blockDirection) {
+
+		EnumFacing blue = blockDirection;
+		EnumFacing red = blue.rotateYCCW();
+		EnumFacing green = red.rotateYCCW();
+
+		int maxPower;
+		int bluePower = this.worldObj.getRedstonePower(this.pos.offset(blue), blue);
+		int redPower = this.worldObj.getRedstonePower(this.pos.offset(red), red);
+		int greenPower = this.worldObj.getRedstonePower(this.pos.offset(green), green);
+
+		int power = bestOfThree(greenPower, redPower, bluePower);
+		int tileentitycolor;
+
+		if (power == greenPower) {
+			tileentitycolor = 0;
+			maxPower = greenPower;
+		} else if (power == redPower) {
+			tileentitycolor = 1;
+			maxPower = redPower;
+		} else {
+			tileentitycolor = 2;
+			maxPower = bluePower;
+		}
+
+		return tileentitycolor;
+	}
+
+	public int bestOfThree(int one, int two, int three) {
+		if (two >= three) {
+			if (one >= two) {
+				return one;
+			}
+			return two;
+		}
+		return three;
+	}
+
+	// TileEntity
+
 	@Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState)
-    {
-        return (oldState.getBlock() != newState.getBlock());
-    }
-	
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+		return (oldState.getBlock() != newState.getBlock());
+	}
+
 	@Override
-	public void readFromNBT(NBTTagCompound compound){
+	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		
-		
+
 		final byte NBT_TYPE_COMPOUND = 10;
 		NBTTagList taglist = compound.getTagList("Items", NBT_TYPE_COMPOUND);
-		
+
 		Arrays.fill(markerStorage, null);
-		for(int i=0; i < taglist.tagCount(); ++i){
+		for (int i = 0; i < taglist.tagCount(); ++i) {
 			NBTTagCompound nbttagcompound = taglist.getCompoundTagAt(i);
 			int slotIndex = nbttagcompound.getByte("Slot") & 255;
-			
-			if(slotIndex >= 0 && slotIndex < this.markerStorage.length){
+
+			if (slotIndex >= 0 && slotIndex < this.markerStorage.length) {
 				this.markerStorage[slotIndex] = ItemStack.loadItemStackFromNBT(nbttagcompound);
 			}
 		}
-		System.out.println("read from NBT");
 	}
-	
+
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound compound){
+	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		super.writeToNBT(compound);
 		NBTTagList taglist = new NBTTagList();
-		
-		for(int i=0 ; i < this.getSizeInventory() ; ++i){
-			if(this.markerStorage[i] != null){
+
+		for (int i = 0; i < this.getSizeInventory(); ++i) {
+			if (this.markerStorage[i] != null) {
 				NBTTagCompound nbttagcompound = new NBTTagCompound();
-				nbttagcompound.setByte("Slot", (byte)i);
+				nbttagcompound.setByte("Slot", (byte) i);
 				this.markerStorage[i].writeToNBT(nbttagcompound);
 				taglist.appendTag(nbttagcompound);
 			}
 		}
-		
+
 		compound.setTag("Items", taglist);
-		
-		
-		System.out.println("Written to NBT");
+
 		return compound;
 	}
-	
+
 	@Override
-    public SPacketUpdateTileEntity getUpdatePacket(){
+	public SPacketUpdateTileEntity getUpdatePacket() {
 		NBTTagCompound tag = new NBTTagCompound();
 		writeToNBT(tag);
-        return new SPacketUpdateTileEntity(this.pos,0,tag);
-    }
-	
-	@Override
-    public void onDataPacket(net.minecraft.network.NetworkManager net, net.minecraft.network.play.server.SPacketUpdateTileEntity pkt){
-		readFromNBT(pkt.getNbtCompound());
-		
-    }
-	
+		return new SPacketUpdateTileEntity(this.pos, 1, tag);
+	}
 
-	//IInventory
-	
+	@Override
+	public void onDataPacket(net.minecraft.network.NetworkManager net,
+			net.minecraft.network.play.server.SPacketUpdateTileEntity pkt) {
+		readFromNBT(pkt.getNbtCompound());
+	}
+
+	// IInventory
+
 	@Override
 	public String getName() {
 		return "Jump Pad";
@@ -169,8 +238,6 @@ public class TileEntityJumpPad extends TileEntity implements IInventory, ITickab
 
 		return false;
 	}
-
-
 
 	@Override
 	public int getSizeInventory() {
@@ -184,32 +251,38 @@ public class TileEntityJumpPad extends TileEntity implements IInventory, ITickab
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		
-		if(markerStorage[index] != null){
-			
-			if(markerStorage[index].stackSize <= count){
+
+		if (markerStorage[index] != null) {
+
+			if (markerStorage[index].stackSize <= count) {
 				ItemStack stack = markerStorage[index];
 				markerStorage[index] = null;
+				this.worldObj.markAndNotifyBlock(this.pos, this.worldObj.getChunkFromBlockCoords(this.pos),
+						this.worldObj.getBlockState(pos), this.worldObj.getBlockState(pos), 3);
 				markDirty();
 				return stack;
-			}else{
+			} else {
 				ItemStack stack2 = markerStorage[index].splitStack(count);
-				if(markerStorage[index].stackSize == 0)
+				if (markerStorage[index].stackSize == 0)
 					markerStorage[index] = null;
+				this.worldObj.markAndNotifyBlock(this.pos, this.worldObj.getChunkFromBlockCoords(this.pos),
+						this.worldObj.getBlockState(pos), this.worldObj.getBlockState(pos), 3);
 				markDirty();
 				return stack2;
 			}
-			
+
 		}
-		
+
 		return null;
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		if(markerStorage[index] != null){
+		if (markerStorage[index] != null) {
 			ItemStack stack = markerStorage[index];
 			markerStorage[index] = null;
+			this.worldObj.markAndNotifyBlock(this.pos, this.worldObj.getChunkFromBlockCoords(this.pos),
+					this.worldObj.getBlockState(pos), this.worldObj.getBlockState(pos), 3);
 			markDirty();
 			return stack;
 		}
@@ -229,34 +302,34 @@ public class TileEntityJumpPad extends TileEntity implements IInventory, ITickab
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		if(this.worldObj.getTileEntity(this.pos) != this)
+		if (this.worldObj.getTileEntity(this.pos) != this)
 			return false;
-		
-		return player.getDistanceSq(pos.getX() + .5, pos.getY()+.5 , pos.getZ() + .5) < 64;
-				
+
+		return player.getDistanceSq(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5) < 64;
+
 	}
 
 	@Override
 	public void openInventory(EntityPlayer player) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void closeInventory(EntityPlayer player) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		if(stack == null)
+		if (stack == null)
 			return true;
-		
-		if(stack.getUnlocalizedName() == "PadMarker"){
+
+		if (stack.getUnlocalizedName() == "PadMarker") {
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -269,7 +342,7 @@ public class TileEntityJumpPad extends TileEntity implements IInventory, ITickab
 	@Override
 	public void setField(int id, int value) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -281,8 +354,6 @@ public class TileEntityJumpPad extends TileEntity implements IInventory, ITickab
 	@Override
 	public void clear() {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
-	
 }

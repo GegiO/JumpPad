@@ -3,7 +3,7 @@
     "textures": {
         "particle": "blocks/anvil_base",
         "0": "blocks/anvil_base",
-        "1": "blocks/diamond_block",
+        "1": "blocks/planks_birch",
         "2": "blocks/wool_colored_blue",
         "3": "blocks/wool_colored_red",
         "4": "blocks/wool_colored_green"

@@ -5,7 +5,7 @@ import java.util.List;
 
 import gegio.JumpPads.JumpPads;
 import gegio.JumpPads.Reference;
-import gegio.JumpPads.playerMods.AirResistNeutralizer;
+import gegio.JumpPads.Subscriptions.AirResistNeutralizer;
 import gegio.JumpPads.util.LaunchContainer;
 import gegio.JumpPads.util.LaunchHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +25,8 @@ import net.minecraftforge.common.MinecraftForge;
 public class PadMarker extends Item {
 	
 	private int dimension;
+	private double power = 0;
+	private double angle = 0;
 
 	public PadMarker(){
 		this.setUnlocalizedName("PadMarker");
@@ -37,18 +39,17 @@ public class PadMarker extends Item {
 	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
 			EnumFacing facing, float hitX, float hitY, float hitZ){
 		
-		
-		if(!playerIn.isSneaking()){
 			if(stack.getTagCompound() == null){
 				stack.setTagCompound(new NBTTagCompound());
 			}
 			NBTTagCompound nbt = new NBTTagCompound();
-			nbt.setDouble("posX", pos.getX());
-			nbt.setDouble("posY", pos.getY() + 1);
-			nbt.setDouble("posZ", pos.getZ());
+			nbt.setDouble("posX", pos.getX() + .5);
+			nbt.setDouble("posY", pos.getY());
+			nbt.setDouble("posZ", pos.getZ() + .5);
 			nbt.setInteger("dimension&check", playerIn.dimension);
+			
 			stack.getTagCompound().setTag("coords", nbt);
-		}
+
 
 		return super.onItemUse(stack, playerIn, worldIn, pos, hand, facing, hitX, hitY, hitZ);
 	}

@@ -5,8 +5,6 @@ Adds a transportation item to minecraft that launches you to specific locations.
 
 TODO: 
 
-Add redstone functionality
-Clean up the jumppads GUI
-fix some weirdness with 3rd person mode
-add recipes to make object accessable without cheating
+Works pretty well. One last testing run to make sure it works well with other mods. 
 
+Release on curse.com

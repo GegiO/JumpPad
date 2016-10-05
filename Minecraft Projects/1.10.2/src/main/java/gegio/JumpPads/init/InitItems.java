@@ -21,8 +21,6 @@ public class InitItems {
 	}
 	
 	public static void register(){
-		//GameRegistry.registerItem(CreativeIcon, CreativeIcon.getUnlocalizedName().substring(5));
-		//GameRegistry.registerItem(PadMarker, PadMarker.getUnlocalizedName().substring(5));
 		CreativeIcon.setRegistryName(Reference.MOD_ID,"CreativeIcon");
 		GameRegistry.register(CreativeIcon);
 		PadMarker.setRegistryName(Reference.MOD_ID,"PadMarker");
@@ -37,9 +35,6 @@ public class InitItems {
 	}
 	
 	public static void registerRender(Item item){
-		//Minecraft.getMinecraft().getRenderItem().getItemModelMesher()
-		//.register(item, 0, new ModelResourceLocation(Reference.MOD_ID+":" + item.getUnlocalizedName().substring(5), "inventory"));
-		
 		ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(),"inventory"));
 	}
 }
